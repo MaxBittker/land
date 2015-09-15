@@ -1,5 +1,3 @@
-
-
 var iso = new Isomer(document.getElementById("art"));
 var canvas = document.getElementById('art');
 var context = canvas.getContext('2d');
@@ -8,51 +6,97 @@ var Shape = Isomer.Shape;
 var Point = Isomer.Point;
 var Color = Isomer.Color;
 var blue = new Color(50, 60, 160);
-var x = 1;
-var y = 1;
+var x = 6;
+var y = 6;
 var z = 0;
 var delta = .3;
 
-var coins = [];
+var dir = 0;
 
-for(var c = 0; c<6;c++)
-{
-	coins.push([Math.floor(Math.random()*7)+1,Math.floor(Math.random()*7)+1]);
+
+window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function(callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+
+(function animloop() {
+    requestAnimFrame(animloop);
+    render();
+})();
+
+function render() {
+    if (oob())
+        dir = (dir + 1) % 4;
+
+    switch (dir) {
+        case 0:
+            x += delta;
+            // y += delta/10;
+            // y += delta;
+            break;
+        case 1:
+            // x -= delta;
+            // x -= delta/10;
+            y += delta;
+            break;
+        case 2:
+            x -= delta;
+            // y -= delta;
+            // y -= delta/10;
+            break;
+        case 3:
+            // x += delta;
+            // x += delta/10;
+            y -= delta;
+            break;
+        default:
+            alert("badcase")
+    }
+    draw();
 }
-  		// iso.add(Shape.Prism(Point.ORIGIN, 7, 7, 1))
-for(var n = 0; n<coins.length;n++){
-		// iso.add(Shape.Prism(new Point(coins[n][0]+.3,coins[n][1]+.3,0),.4,.4,.4),new Color(160,90,50));
-		}
-		
-        // iso.add(Shape.Pyramid(new Point(x,y,z)),new Color(160, 60*Math.random(), 50));
 
+function oob() {
+    // if (Math.sqrt((x * x) + (y * y)) > 10)
+    if ((Math.abs(x-4)+Math.abs(y-3))>8)
+        return true
+    else
+        return false
+}
 
-	window.addEventListener("keydown", function(evt){        
-		// console.log(x,y,evt.keyCode);
-		switch(evt.keyCode)
-		{
-			 case 37:
+function draw() {
+    iso.add(Shape.Pyramid(new Point(x, y, z)), new Color(160 * Math.random(), 60 * Math.random(), 50 * Math.random()));
+}
+
+window.addEventListener("keydown", function(evt) {
+    // console.log(x,y,evt.keyCode);
+    switch (evt.keyCode) {
+        case 37:
             // left key pressed
-            x-=delta;
+            x -= delta;
             break;
         case 38:
-            y+=delta;// up key pressed
+            y += delta; // up key pressed
             break;
         case 39:
-            x+=delta;// right key pressed
+            x += delta; // right key pressed
             break;
         case 40:
-            y-=delta;// down key pressed
-            break;  
+            y -= delta; // down key pressed
+            break;
 
-		}
-  		// iso.add(Shape.Prism(Point.ORIGIN, 7, 7, 1))
-		// for(var n = 0; n<coins.length;n++){
-		// iso.add(Shape.Prism(new Point(coins[n][0]+.3,coins[n][1]+.3,0),.4,.4,.4),new Color(160,90,50));
+    }
+    // iso.add(Shape.Prism(Point.ORIGIN, 7, 7, 1))
+    // for(var n = 0; n<coins.length;n++){
+    // iso.add(Shape.Prism(new Point(coins[n][0]+.3,coins[n][1]+.3,0),.4,.4,.4),new Color(160,90,50));
 
-		// }
-        iso.add(Shape.Pyramid(new Point(x,y,z)),new Color(160*Math.random(), 60*Math.random(), 50*Math.random()));
-      }, false);
+    // }
+    iso.add(Shape.Pyramid(new Point(x, y, z)), new Color(160 * Math.random(), 60 * Math.random(), 50 * Math.random()));
+}, false);
 
 
 // iso.add([
